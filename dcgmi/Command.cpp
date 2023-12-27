@@ -59,7 +59,9 @@ dcgmReturn_t Command::Connect(void)
     if (DCGM_ST_OK != result)
     {
         if (m_silent == false)
+        {
             std::cout << "Error: unable to initialize DCGM" << std::endl;
+        }
         return result;
     }
 

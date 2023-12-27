@@ -44,14 +44,18 @@ std::optional<UserCredentials> GetUserCredentials(char const *userName) noexcept
     passwd *result = nullptr;
     std::vector<char> buffer;
     size_t bufferSize = sysconf(_SC_GETPW_R_SIZE_MAX);
-
-    int err = 0;
-    do
+    
+    if (bufferSize == -1) /* Error or value was indeterminate */
     {
-        buffer.resize(bufferSize);
-        err = getpwnam_r(userName, &pwInfo, buffer.data(), buffer.size(), &result);
+        bufferSize = 1024
+    }
+    
+    int err = 0;
+    while ((err = getpwnam_r(userName, &pwInfo, buffer.data(), buffer.size(), &result)) == ERANGE)
+    {
         bufferSize *= 2;
-    } while (err == ERANGE);
+        buffer.resize(bufferSize);
+    }
 
     if (err != 0)
     {
@@ -61,12 +65,12 @@ std::optional<UserCredentials> GetUserCredentials(char const *userName) noexcept
         throw std::system_error(std::error_code(err, std::generic_category()), msg);
     }
 
-    if (result != nullptr)
+    if (result == nullptr)
     {
-        return UserCredentials { result->pw_gid, result->pw_uid, {} };
+        return std::nullopt;
     }
-
-    return std::nullopt;
+   
+    return UserCredentials { result->pw_gid, result->pw_uid, {} };
 }
 
 /**

@@ -78,8 +78,7 @@ void CreateGroupsFromCpuAffinities(dcgmAffinity_t &affinity,
             continue;
 
         // Add this gpu as the first in its group and save the index
-        std::vector<unsigned int> group;
-        group.push_back(gpuId);
+        std::vector<unsigned int> group = {gpuId};
 
         for (unsigned int j = i + 1; j < affinity.numGpus; j++)
         {
@@ -105,7 +104,6 @@ void PopulatePotentialCpuMatches(std::vector<std::vector<unsigned int>> &affinit
                                  uint32_t numGpus)
 {
     for (size_t i = 0; i < affinityGroups.size(); i++)
-
     {
         if (affinityGroups[i].size() >= numGpus)
         {
@@ -264,8 +262,7 @@ unsigned int SetIOConnectionLevels(std::vector<unsigned int> &affinityGroup,
 
             if (connectionLevel.find(score) == connectionLevel.end())
             {
-                std::vector<DcgmGpuConnectionPair> temp;
-                temp.push_back(cp);
+                std::vector<DcgmGpuConnectionPair> temp = {cp};
                 connectionLevel[score] = temp;
 
                 if (score > highestScore)
@@ -309,8 +306,7 @@ bool HasStrongConnection(std::vector<DcgmGpuConnectionPair> &connections, uint32
     {
         for (size_t outer = 0; outer < connections.size(); outer++)
         {
-            std::vector<DcgmGpuConnectionPair> list;
-            list.push_back(connections[outer]);
+            std::vector<DcgmGpuConnectionPair> list = {connections[outer]};
             // There are two gpus in the first connection
             unsigned int strongGpus = 2;
 

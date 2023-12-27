@@ -183,16 +183,14 @@ dcgmReturn_t CommandLineParser::ProcessCommandLine(int argc, char const *const *
 
         // call the correct subsystem
         auto it = m_functionMap.find(subsystemArg.getValue());
-        if (it != m_functionMap.end())
-        {
-            result = std::invoke(m_functionMap[subsystemArg.getValue()], argc, argv);
-        }
-        else
+        if(it == m_functionMap.end())
         {
             std::cout << "ERROR: Invalid subsystem." << std::endl << std::endl;
             nvout.usage(cmd);
             return DCGM_ST_BADPARAM;
         }
+        result = std::invoke(m_functionMap[subsystemArg.getValue()], argc, argv);
+       
     }
     catch (TCLAP::ArgException &e)
     {
@@ -238,10 +236,7 @@ dcgmReturn_t CommandLineParser::ProcessQueryCommandLine(int argc, char const *co
         "c", "compute-hierarchy", "List all of the gpu instances and compute instances", false);
     TCLAP::ValueArg<std::string> hostAddress("", "host", g_hostnameHelpText, false, "localhost", "IP/FQDN");
 
-    std::vector<TCLAP::Arg *> xors;
-    xors.push_back(&getList);
-    xors.push_back(&getInfo);
-    xors.push_back(&computeInstances);
+    std::vector<TCLAP::Arg *> xors = { &getList, &getInfo, &computeInstances };
     cmd.xorAdd(xors);
     cmd.add(&hostAddress);
 
@@ -367,11 +362,7 @@ dcgmReturn_t CommandLineParser::ProcessPolicyCommandLine(int argc, char const *c
     TCLAP::SwitchArg xidError("x", "xiderrors", "Add XID errors to the policy conditions.", cmd, false);
     TCLAP::SwitchArg json("j", "json", "Print the output in a json format", cmd, false);
 
-    std::vector<TCLAP::Arg *> xors;
-    xors.push_back(&getPolicy);
-    xors.push_back(&regPolicy);
-    xors.push_back(&setPolicyArg);
-    xors.push_back(&clearPolicy);
+    std::vector<TCLAP::Arg *> xors = { &getPolicy, &regPolicy, &setPolicyArg, &clearPolicy };
     cmd.xorAdd(xors);
     cmd.add(&hostAddress);
 
@@ -599,11 +590,7 @@ dcgmReturn_t CommandLineParser::ProcessGroupCommandLine(int argc, char const *co
     cmd.add(&defaultNvSwitchGroup);
     cmd.add(&json);
 
-    std::vector<TCLAP::Arg *> xors;
-    xors.push_back(&listGroup);
-    xors.push_back(&groupId);
-    xors.push_back(&deleteGroup);
-    xors.push_back(&createGroup);
+    std::vector<TCLAP::Arg *> xors = { &listGroup, &groupId, &deleteGroup, &createGroup };
     cmd.xorAdd(xors);
     cmd.add(&hostAddress);
 
@@ -904,10 +891,7 @@ dcgmReturn_t CommandLineParser::ProcessConfigCommandLine(int argc, char const *c
     TCLAP::SwitchArg enforceConfig("", "enforce", "Enforce configuration.", false); // Different command-line
     // Add more options to enforce command-line
 
-    std::vector<TCLAP::Arg *> xors;
-    xors.push_back(&setConfig);
-    xors.push_back(&getConfig);
-    xors.push_back(&enforceConfig);
+    std::vector<TCLAP::Arg *> xors = { &setConfig, &getConfig, &enforceConfig };
     cmd.xorAdd(xors);
 
     cmd.add(&eccMode);
@@ -1123,11 +1107,7 @@ dcgmReturn_t CommandLineParser::ProcessHealthCommandLine(int argc, char const *c
                                            "seconds",
                                            cmd);
 
-    std::vector<TCLAP::Arg *> xors;
-    xors.push_back(&getWatches);
-    xors.push_back(&setWatches);
-    xors.push_back(&clearWatches);
-    xors.push_back(&checkWatches);
+    std::vector<TCLAP::Arg *> xors = { &getWatches, &setWatches, &clearWatches, &checkWatches };
     cmd.xorAdd(xors);
     cmd.add(&hostAddress);
 
@@ -1633,15 +1613,8 @@ dcgmReturn_t CommandLineParser::ProcessStatsCommandLine(int argc, char const *co
                                     3600,
                                     "");
 
-    std::vector<TCLAP::Arg *> xors;
-    xors.push_back(&pid);
-    xors.push_back(&enableWatches);
-    xors.push_back(&disableWatches);
-    xors.push_back(&jobStart);
-    xors.push_back(&jobStop);
-    xors.push_back(&jobStats);
-    xors.push_back(&jobRemove);
-    xors.push_back(&jobRemoveAll);
+    std::vector<TCLAP::Arg *> xors
+        = { &pid, &enableWatches, &disableWatches, &jobStart, &jobStop, &jobStats, &jobRemove, &jobRemoveAll };
     cmd.xorAdd(xors);
     cmd.add(&hostAddress);
     cmd.add(&updateInterval);
@@ -1837,8 +1810,7 @@ dcgmReturn_t CommandLineParser::ProcessIntrospectCommandLine(int argc, char cons
                           false);
     TCLAP::ValueArg<std::string> hostAddress("", "host", g_hostnameHelpText, false, "localhost", "IP/FQDN");
 
-    std::vector<TCLAP::Arg *> cmdXors;
-    cmdXors.push_back(&show);
+    std::vector<TCLAP::Arg *> cmdXors = { &show };
 
     TCLAP::SwitchArg hostengineTarget(
         "H", "hostengine", "Specify the hostengine process as a target to retrieve introspection stats for.", false);
@@ -1989,10 +1961,7 @@ dcgmReturn_t CommandLineParser::ProcessDmonCommandLine(int argc, char const *con
     helpOutput.addToGroup("1", &count);
     helpOutput.addToGroup("1", &list);
 
-    std::vector<TCLAP::Arg *> xorsFields;
-    xorsFields.push_back(&fieldGroupId);
-    xorsFields.push_back(&fieldId);
-    xorsFields.push_back(&list);
+    std::vector<TCLAP::Arg *> xorsFields = { &fieldGroupId, &fieldId, &list };
     cmd.xorAdd(xorsFields);
     cmd.add(&delay);
     cmd.add(&count);
@@ -2087,7 +2056,6 @@ dcgmReturn_t CommandLineParser::ProcessProfileCommandLine(int argc, char const *
     TCLAP::SwitchArg json("j", "json", "Print the output in a json format", cmd, false);
 
     /* Available subcommands */
-    std::vector<TCLAP::Arg *> xors;
     TCLAP::SwitchArg list("l", "list", "List available profiling metrics for a GPU or group of GPUs", false);
     TCLAP::SwitchArg pauseArg(
         "",
@@ -2095,9 +2063,7 @@ dcgmReturn_t CommandLineParser::ProcessProfileCommandLine(int argc, char const *
         " Pause DCGM profiling in order to run NVIDIA developer tools like nvprof, nsight compute, or nsight systems.",
         false);
     TCLAP::SwitchArg resumeArg("", "resume", " Resume DCGM profiling that was paused previously with --pause.", false);
-    xors.push_back(&list);
-    xors.push_back(&pauseArg);
-    xors.push_back(&resumeArg);
+    std::vector<TCLAP::Arg *> xors = { &list, &pauseArg, &resumeArg };
     cmd.xorAdd(xors);
 
     /* A list of entities or a groupId could be provided. Otherwise, we assume all GPUs are desired */
@@ -2230,9 +2196,7 @@ dcgmReturn_t CommandLineParser::ProcessModuleCommandLine(int argc, char const *c
     TCLAP::SwitchArg list("l", "list", "List modules on hostengine", false);
     TCLAP::ValueArg<std::string> denylist("", "denylist", "Denylist provided module", false, "", "Name");
 
-    std::vector<TCLAP::Arg *> xors;
-    xors.push_back(&list);
-    xors.push_back(&denylist);
+    std::vector<TCLAP::Arg *> xors = { &list, &denylist };
     cmd.xorAdd(xors);
 
     cmd.parse(argc, argv);
@@ -2279,11 +2243,7 @@ dcgmReturn_t CommandLineParser::ProcessAdminCommandLine(int argc, char const *co
                            false);
     TCLAP::SwitchArg resume("", "resume", "Resume metrics collection previously paused with --pause", false);
 
-    std::vector<TCLAP::Arg *> xors;
-    xors.push_back(&introspect);
-    xors.push_back(&inject);
-    xors.push_back(&pause);
-    xors.push_back(&resume);
+    std::vector<TCLAP::Arg *> xors = { &introspect, &inject, &pause, &resume };
     cmd.xorAdd(xors);
 
     helpOutput.addToGroup("1", &hostAddress);

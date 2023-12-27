@@ -1730,8 +1730,6 @@ dcgmReturn_t PhysicalGpu::CreateDcgmGroups(void)
     if (dcgmReturn != DCGM_ST_OK)
     {
         error_reporter << "dcgmFieldGroupCreate() returned " << dcgmReturn << "." << error_reporter.new_line;
-
-        return dcgmReturn;
     }
 
     return dcgmReturn;

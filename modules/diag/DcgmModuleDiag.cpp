@@ -43,10 +43,8 @@ dcgmReturn_t DcgmModuleDiag::ProcessRun_v5(dcgm_diag_msg_run_v5 *msg)
     {
         return dcgmReturn; /* Logging handled by helper method */
     }
-    else
-    {
-        drw.SetVersion7(&msg->diagResponse);
-    }
+    
+    drw.SetVersion7(&msg->diagResponse);
 
     /* Sanitize the inputs */
     dcgmTerminateCharBuffer(msg->runDiag.fakeGpuList);
@@ -88,11 +86,9 @@ dcgmReturn_t DcgmModuleDiag::ProcessRun_v7(dcgm_diag_msg_run_v7 *msg)
     {
         return dcgmReturn; /* Logging handled by helper method */
     }
-    else
-    {
-        drw.SetVersion9(&msg->diagResponse);
-    }
-
+   
+    drw.SetVersion9(&msg->diagResponse);
+    
     /* Sanitize the inputs */
     dcgmTerminateCharBuffer(msg->runDiag.fakeGpuList);
     dcgmTerminateCharBuffer(msg->runDiag.gpuList);
@@ -133,10 +129,8 @@ dcgmReturn_t DcgmModuleDiag::ProcessRun_v6(dcgm_diag_msg_run_v6 *msg)
     {
         return dcgmReturn; /* Logging handled by helper method */
     }
-    else
-    {
-        drw.SetVersion8(&msg->diagResponse);
-    }
+    
+    drw.SetVersion8(&msg->diagResponse);
 
     /* Sanitize the inputs */
     dcgmTerminateCharBuffer(msg->runDiag.fakeGpuList);

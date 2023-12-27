@@ -356,14 +356,8 @@ dcgmReturn_t DcgmHealthWatch::GetWatches(unsigned int groupId, dcgmHealthSystems
 
     dcgm_mutex_lock(m_mutex);
     groupWatchIter = mGroupWatchState.find(groupId);
-    if (groupWatchIter == mGroupWatchState.end())
-    {
-        *systems = (dcgmHealthSystems_enum)0;
-    }
-    else
-    {
-        *systems = groupWatchIter->second;
-    }
+
+    *systems = (groupWatchIter == mGroupWatchState.end()) ? (dcgmHealthSystems_enum)0 : groupWatchIter->second;
 
     dcgm_mutex_unlock(m_mutex);
     return DCGM_ST_OK;

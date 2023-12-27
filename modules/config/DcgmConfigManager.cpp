@@ -594,8 +594,8 @@ dcgmReturn_t DcgmConfigManager::GetCurrentConfig(unsigned int groupId,
 
     if (multiRetCode != 0)
         return DCGM_ST_GENERIC_ERROR;
-    else
-        return DCGM_ST_OK;
+    
+    return DCGM_ST_OK;
 }
 
 /*****************************************************************************/
@@ -698,7 +698,6 @@ dcgmReturn_t DcgmConfigManager::HelperEnforceConfig(unsigned int gpuId, DcgmConf
     if (isResetNeeded)
     {
         log_warning("For GPU ID {}, reset can't be performed: {}", gpuId, dcgmReturn);
-
         multiPropertyRetCode++;
         statusList->AddStatus(gpuId, DCGM_FI_DEV_ECC_CURRENT, DCGM_ST_RESET_REQUIRED);
     }
@@ -921,8 +920,8 @@ dcgmReturn_t DcgmConfigManager::EnforceConfigGroup(unsigned int groupId, DcgmCon
 
     if (0 == grpRetCode)
         return DCGM_ST_OK;
-    else
-        return DCGM_ST_GENERIC_ERROR;
+    
+    return DCGM_ST_GENERIC_ERROR;
 }
 
 /*****************************************************************************/

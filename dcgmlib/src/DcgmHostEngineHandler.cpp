@@ -440,12 +440,10 @@ dcgmReturn_t DcgmHostEngineHandler::HelperGetTopologyAffinity(unsigned int group
     for (auto &entitie : entities)
     {
         /* Only consider GPUs */
-        if (entitie.entityGroupId != DCGM_FE_GPU)
+        if (entitie.entityGroupId == DCGM_FE_GPU)
         {
-            continue;
+            dcgmGpuIds.push_back(entitie.entityId);
         }
-
-        dcgmGpuIds.push_back(entitie.entityId);
     }
 
     if (dcgmGpuIds.empty())
@@ -496,11 +494,8 @@ dcgmReturn_t DcgmHostEngineHandler::GetCachedOrLiveValueForEntity(dcgmGroupEntit
     dcgmReturn = mpCacheManager->GetLatestSample(entity.entityGroupId, entity.entityId, fieldId, nullptr, &fvBuffer);
     if (dcgmReturn == DCGM_ST_NOT_WATCHED || dcgmReturn == DCGM_ST_NO_DATA)
     {
-        std::vector<dcgmGroupEntityPair_t> entities;
-        entities.push_back(entity);
-
-        std::vector<unsigned short> fieldIds;
-        fieldIds.push_back(fieldId);
+        std::vector<dcgmGroupEntityPair_t> entities = {entity};
+        std::vector<unsigned short> fieldIds = {fieldId};
 
         fvBuffer.Clear(); /* GetLatestSample() writes an error entry */
         dcgmReturn = mpCacheManager->GetMultipleLatestLiveSamples(entities, fieldIds, &fvBuffer);
@@ -536,12 +531,10 @@ dcgmReturn_t DcgmHostEngineHandler::HelperGetTopologyIO(unsigned int groupId, dc
     for (auto &entitie : entities)
     {
         /* Only consider GPUs */
-        if (entitie.entityGroupId != DCGM_FE_GPU)
+        if (entitie.entityGroupId == DCGM_FE_GPU)
         {
-            continue;
+            dcgmGpuIds.push_back(entitie.entityId);
         }
-
-        dcgmGpuIds.push_back(entitie.entityId);
     }
 
     if (dcgmGpuIds.empty())
@@ -1180,15 +1173,13 @@ dcgmReturn_t DcgmHostEngineHandler::WatchHostEngineFields()
     dcgmReturn_t dcgmReturn;
     DcgmWatcher watcher(DcgmWatcherTypeHostEngine, DCGM_CONNECTION_ID_NONE);
 
-    fieldIds.clear();
     fieldIds.push_back(DCGM_FI_DEV_ECC_CURRENT); /* Can really only change once per driver reload. NVML caches this so
                                                     it's virtually a no-op */
 
     /* Don't bother with vGPU fields unless we're in Host vGPU mode per DCGM-513 */
     if (mpCacheManager->AreAnyGpusInHostVGPUMode())
     {
-        fieldIds.push_back(DCGM_FI_DEV_CREATABLE_VGPU_TYPE_IDS); /* Used by dcgmVgpuDeviceAttributes_t */
-        fieldIds.push_back(DCGM_FI_DEV_VGPU_INSTANCE_IDS);       /* Used by dcgmVgpuDeviceAttributes_t */
+        fieldIds.insert(fieldIds.end(), {DCGM_FI_DEV_CREATABLE_VGPU_TYPE_IDS, DCGM_FI_DEV_VGPU_INSTANCE_IDS}); /* Used by dcgmVgpuDeviceAttributes_t */
     }
 
     dcgmReturn = mpFieldGroupManager->AddFieldGroup("DCGM_INTERNAL_30SEC", fieldIds, &mFieldGroup30Sec, watcher);
@@ -1208,12 +1199,8 @@ dcgmReturn_t DcgmHostEngineHandler::WatchHostEngineFields()
 
     fieldIds.clear();
     /* Needed as it is the static info related to GPU attribute associated with vGPU */
-    fieldIds.push_back(DCGM_FI_DEV_SUPPORTED_TYPE_INFO);
-    fieldIds.push_back(DCGM_FI_DEV_SUPPORTED_VGPU_TYPE_IDS);
-    fieldIds.push_back(DCGM_FI_DEV_VGPU_TYPE_INFO);
-    fieldIds.push_back(DCGM_FI_DEV_VGPU_TYPE_NAME);
-    fieldIds.push_back(DCGM_FI_DEV_VGPU_TYPE_CLASS);
-    fieldIds.push_back(DCGM_FI_DEV_VGPU_TYPE_LICENSE);
+    fieldIds.insert(fieldIds.end(), {DCGM_FI_DEV_SUPPORTED_TYPE_INFO, DCGM_FI_DEV_SUPPORTED_VGPU_TYPE_IDS, DCGM_FI_DEV_VGPU_TYPE_INFO,
+     DCGM_FI_DEV_VGPU_TYPE_NAME, DCGM_FI_DEV_VGPU_TYPE_CLASS, DCGM_FI_DEV_VGPU_TYPE_LICENSE});
 
     dcgmReturn = mpFieldGroupManager->AddFieldGroup("DCGM_INTERNAL_HOURLY", fieldIds, &mFieldGroupHourly, watcher);
     if (dcgmReturn != DCGM_ST_OK)
@@ -1231,43 +1218,41 @@ dcgmReturn_t DcgmHostEngineHandler::WatchHostEngineFields()
     }
 
     /* Process / job stats fields. Just add the group. The user will watch the fields */
-    fieldIds.clear();
-    fieldIds.push_back(DCGM_FI_DEV_ACCOUNTING_DATA);
-    fieldIds.push_back(DCGM_FI_DEV_POWER_USAGE);
-    fieldIds.push_back(DCGM_FI_DEV_TOTAL_ENERGY_CONSUMPTION);
-    fieldIds.push_back(DCGM_FI_DEV_PCIE_TX_THROUGHPUT);
-    fieldIds.push_back(DCGM_FI_DEV_PCIE_RX_THROUGHPUT);
-    fieldIds.push_back(DCGM_FI_DEV_PCIE_REPLAY_COUNTER);
-    fieldIds.push_back(DCGM_FI_DEV_GPU_UTIL);
-    fieldIds.push_back(DCGM_FI_DEV_MEM_COPY_UTIL);
-    fieldIds.push_back(DCGM_FI_DEV_ECC_DBE_VOL_TOTAL);
-    fieldIds.push_back(DCGM_FI_DEV_SM_CLOCK);
-    fieldIds.push_back(DCGM_FI_DEV_MEM_CLOCK);
-    fieldIds.push_back(DCGM_FI_DEV_XID_ERRORS);
-    fieldIds.push_back(DCGM_FI_DEV_COMPUTE_PIDS);
-    fieldIds.push_back(DCGM_FI_DEV_GRAPHICS_PIDS);
-    fieldIds.push_back(DCGM_FI_DEV_POWER_VIOLATION);
-    fieldIds.push_back(DCGM_FI_DEV_THERMAL_VIOLATION);
-    fieldIds.push_back(DCGM_FI_DEV_SYNC_BOOST_VIOLATION);
-    fieldIds.push_back(DCGM_FI_DEV_MEM_COPY_UTIL_SAMPLES);
-    fieldIds.push_back(DCGM_FI_DEV_GPU_UTIL_SAMPLES);
-    fieldIds.push_back(DCGM_FI_DEV_RETIRED_SBE);
-    fieldIds.push_back(DCGM_FI_DEV_RETIRED_DBE);
-    fieldIds.push_back(DCGM_FI_DEV_RETIRED_PENDING);
-    fieldIds.push_back(DCGM_FI_DEV_INFOROM_CONFIG_VALID);
-
-    fieldIds.push_back(DCGM_FI_DEV_THERMAL_VIOLATION);
-    fieldIds.push_back(DCGM_FI_DEV_POWER_VIOLATION);
-
     /* Add Watch for NVLINK flow control CRC Error Counter for all the lanes */
-    fieldIds.push_back(DCGM_FI_DEV_NVLINK_CRC_FLIT_ERROR_COUNT_TOTAL);
     /* Add Watch for NVLINK data CRC Error Counter for all the lanes */
-    fieldIds.push_back(DCGM_FI_DEV_NVLINK_CRC_DATA_ERROR_COUNT_TOTAL);
     /* Add Watch for NVLINK Replay Error Counter for all the lanes */
-    fieldIds.push_back(DCGM_FI_DEV_NVLINK_REPLAY_ERROR_COUNT_TOTAL);
     /* Add Watch for NVLINK Recovery Error Counter for all the lanes*/
-    fieldIds.push_back(DCGM_FI_DEV_NVLINK_RECOVERY_ERROR_COUNT_TOTAL);
-
+    fieldIds.clear();
+    fieldIds.insert(fieldIds.end(), {DCGM_FI_DEV_ACCOUNTING_DATA, 
+        DCGM_FI_DEV_POWER_USAGE,
+        DCGM_FI_DEV_TOTAL_ENERGY_CONSUMPTION,
+        DCGM_FI_DEV_PCIE_TX_THROUGHPUT,
+        DCGM_FI_DEV_PCIE_RX_THROUGHPUT,
+        DCGM_FI_DEV_PCIE_REPLAY_COUNTER,
+        DCGM_FI_DEV_GPU_UTIL,
+        DCGM_FI_DEV_MEM_COPY_UTIL,
+        DCGM_FI_DEV_ECC_DBE_VOL_TOTAL,
+        DCGM_FI_DEV_SM_CLOCK,
+        DCGM_FI_DEV_MEM_CLOCK,
+        DCGM_FI_DEV_XID_ERRORS,
+        DCGM_FI_DEV_COMPUTE_PIDS,
+        DCGM_FI_DEV_GRAPHICS_PIDS,
+        DCGM_FI_DEV_POWER_VIOLATION,
+        DCGM_FI_DEV_THERMAL_VIOLATION,
+        DCGM_FI_DEV_SYNC_BOOST_VIOLATION,
+        DCGM_FI_DEV_MEM_COPY_UTIL_SAMPLES,
+        DCGM_FI_DEV_GPU_UTIL_SAMPLES,
+        DCGM_FI_DEV_RETIRED_SBE,
+        DCGM_FI_DEV_RETIRED_DBE,
+        DCGM_FI_DEV_RETIRED_PENDING,
+        DCGM_FI_DEV_INFOROM_CONFIG_VALID,
+        DCGM_FI_DEV_THERMAL_VIOLATION,
+        DCGM_FI_DEV_POWER_VIOLATION,
+        DCGM_FI_DEV_NVLINK_CRC_FLIT_ERROR_COUNT_TOTAL,
+        DCGM_FI_DEV_NVLINK_CRC_DATA_ERROR_COUNT_TOTAL,
+        DCGM_FI_DEV_NVLINK_REPLAY_ERROR_COUNT_TOTAL,
+        DCGM_FI_DEV_NVLINK_RECOVERY_ERROR_COUNT_TOTAL});
+    
     // reliability violation time
     // board violation time
     // low utilization time
@@ -1333,9 +1318,8 @@ void DcgmHostEngineHandler::OnFvUpdates(DcgmFvBuffer *fvBuffer,
 
     /* Dispatch each watcher to the corresponding module */
     dcgmModuleId_t destinationModuleId;
-    int i;
 
-    for (i = 0; i < numWatcherTypes; i++)
+    for (unsigned int i = 0; i < numWatcherTypes; i++)
     {
         destinationModuleId = watcherToModuleMap[watcherTypes[i]];
         if (destinationModuleId == DcgmModuleIdCore)
@@ -1367,19 +1351,11 @@ void DcgmHostEngineHandler::OnMigUpdates(unsigned int gpuId)
 
     for (auto &m_module : m_modules)
     {
-        if (m_module.ptr == nullptr)
+        /* Module not loaded */        /* Don't dispatch to ourself */
+        if (m_module.ptr != nullptr && m_module.id != DcgmModuleIdCore)
         {
-            /* Module not loaded */
-            continue;
+            SendModuleMessage((dcgmModuleId_t)m_module.id, (dcgm_module_command_header_t *)&msg);   
         }
-
-        if (m_module.id == DcgmModuleIdCore)
-        {
-            /* Don't dispatch to ourself */
-            continue;
-        }
-
-        SendModuleMessage((dcgmModuleId_t)m_module.id, (dcgm_module_command_header_t *)&msg);
     }
 }
 
@@ -1425,9 +1401,7 @@ void DcgmHostEngineHandler::ShutdownNvml()
 void DcgmHostEngineHandler::LoadNvml()
 {
 #ifdef INJECTION_LIBRARY_AVAILABLE
-    char *injectionMode = getenv(INJECTION_MODE_ENV_VAR);
-
-    if (injectionMode != nullptr)
+    if (getenv(INJECTION_MODE_ENV_VAR) != nullptr)
     {
         m_usingInjectionNvml = true;
         if (NVML_SUCCESS != injectionNvmlInit())
@@ -1437,12 +1411,9 @@ void DcgmHostEngineHandler::LoadNvml()
     }
 #endif
 
-    if (m_usingInjectionNvml == false)
+    if (m_usingInjectionNvml == false && NVML_SUCCESS != nvmlInit_v2())
     {
-        if (NVML_SUCCESS != nvmlInit_v2())
-        {
-            throw std::runtime_error("Error: Failed to initialize NVML");
-        }
+        throw std::runtime_error("Error: Failed to initialize NVML");
     }
 }
 
@@ -1726,7 +1697,7 @@ namespace
 char const *ModuleIdToName(dcgmModuleId_t moduleId)
 {
     char const *moduleName;
-    if (auto ret = dcgmModuleIdToName(moduleId, &moduleName); ret != DCGM_ST_OK)
+    if (dcgmModuleIdToName(moduleId, &moduleName) != DCGM_ST_OK)
     {
         return "Unknown";
     }
@@ -2023,19 +1994,16 @@ static void mergeUniquePids(unsigned int *destPids,
                             const unsigned int *const srcPids,
                             int srcPidsSize)
 {
-    int i;
-    int j;
-    bool havePid;
-
+    
     if ((*destPidsSize) >= maxDestPids)
     {
         return; /* destPids is already full */
     }
 
-    for (i = 0; i < srcPidsSize; i++)
+    for (unsigned int i = 0; i < srcPidsSize; i++)
     {
-        havePid = false;
-        for (j = 0; j < (*destPidsSize); j++)
+        bool havePid = false;
+        for (unsigned int j = 0; j < (*destPidsSize); j++)
         {
             if (srcPids[i] == destPids[j])
             {
@@ -2044,17 +2012,15 @@ static void mergeUniquePids(unsigned int *destPids,
             }
         }
 
-        if (havePid)
+        if(false == havePid)
         {
-            continue;
-        }
+            destPids[*destPidsSize] = srcPids[i];
+            (*destPidsSize)++;
 
-        destPids[*destPidsSize] = srcPids[i];
-        (*destPidsSize)++;
-
-        if ((*destPidsSize) >= maxDestPids)
-        {
-            return; /* destPids is full */
+            if ((*destPidsSize) >= maxDestPids)
+            {
+                return; /* destPids is full */
+            }
         }
     }
 }
@@ -2068,19 +2034,16 @@ static void mergeUniquePidInfo(dcgmProcessUtilInfo_t *destPidInfo,
                                dcgmProcessUtilInfo_t *srcPidInfo,
                                int srcPidInfoSize)
 {
-    int i;
-    int j;
-    bool havePid;
-
+    
     if ((*destPidInfoSize) >= maxDestPidInfo)
     {
         return; /* destPids is already full */
     }
 
-    for (i = 0; i < srcPidInfoSize; i++)
+    for (unsigned int i = 0; i < srcPidInfoSize; i++)
     {
-        havePid = false;
-        for (j = 0; j < (*destPidInfoSize); j++)
+        bool havePid = false;
+        for (unsigned int j = 0; j < (*destPidInfoSize); j++)
         {
             if (srcPidInfo[i].pid == destPidInfo[j].pid)
             {
@@ -2089,19 +2052,17 @@ static void mergeUniquePidInfo(dcgmProcessUtilInfo_t *destPidInfo,
             }
         }
 
-        if (havePid)
+        if (havePid == false)
         {
-            continue;
-        }
+            destPidInfo[*destPidInfoSize].pid     = srcPidInfo[i].pid;
+            destPidInfo[*destPidInfoSize].smUtil  = srcPidInfo[i].smUtil;
+            destPidInfo[*destPidInfoSize].memUtil = srcPidInfo[i].memUtil;
+            (*destPidInfoSize)++;
 
-        destPidInfo[*destPidInfoSize].pid     = srcPidInfo[i].pid;
-        destPidInfo[*destPidInfoSize].smUtil  = srcPidInfo[i].smUtil;
-        destPidInfo[*destPidInfoSize].memUtil = srcPidInfo[i].memUtil;
-        (*destPidInfoSize)++;
-
-        if ((*destPidInfoSize) >= maxDestPidInfo)
-        {
-            return; /* destPids is full */
+            if ((*destPidInfoSize) >= maxDestPidInfo)
+            {
+                return; /* destPids is full */
+            }
         }
     }
 }
@@ -2694,21 +2655,19 @@ dcgmReturn_t DcgmHostEngineHandler::JobStartStats(std::string const &jobId, unsi
     auto lock = Lock();
 
     it = mJobIdMap.find(jobId);
-    if (it == mJobIdMap.end())
-    {
-        /* Insert it as a record */
-        jobRecord_t record;
-        record.startTime = timelib_usecSince1970();
-        record.endTime   = 0;
-        record.groupId   = groupId;
-        mJobIdMap.insert(make_pair(jobId, record));
-    }
-    else
+    if (it != mJobIdMap.end())
     {
         log_error("Duplicate JobId as input : {}", jobId.c_str());
         /* Implies that the entry corresponding to the job id already exists */
         return DCGM_ST_DUPLICATE_KEY;
     }
+
+    /* Insert it as a record */
+    jobRecord_t record;
+    record.startTime = timelib_usecSince1970();
+    record.endTime   = 0;
+    record.groupId   = groupId;
+    mJobIdMap.insert(make_pair(jobId, record));
 
     return DCGM_ST_OK;
 }
@@ -2844,12 +2803,10 @@ dcgmReturn_t DcgmHostEngineHandler::JobGetStats(const std::string &jobId, dcgmJo
     /* Process stats are only supported for GPUs for now */
     for (i = 0; i < (int)entities.size(); i++)
     {
-        if (entities[i].entityGroupId != DCGM_FE_GPU)
+        if (entities[i].entityGroupId == DCGM_FE_GPU)
         {
-            continue;
+            gpuIds.push_back(entities[i].entityId);
         }
-
-        gpuIds.push_back(entities[i].entityId);
     }
 
     /* Initialize a health response to be populated later */
@@ -3101,14 +3058,7 @@ dcgmReturn_t DcgmHostEngineHandler::JobGetStats(const std::string &jobId, dcgmJo
             DCGM_FE_GPU, singleInfo->gpuId, DCGM_FI_DEV_SM_CLOCK, &singleInfo->smClock, startTime, endTime);
 
         /* If  SM clock is blank, update the average with the SM  clock value as 0 for this GPU*/
-        if (DCGM_INT32_IS_BLANK(singleInfo->smClock.average))
-        {
-            fieldValue = 0;
-        }
-        else
-        {
-            fieldValue = singleInfo->smClock.average;
-        }
+        fieldValue = (true == DCGM_INT32_IS_BLANK(singleInfo->smClock.average)) ? 0 : singleInfo->smClock.average;
 
         pJobInfo->summary.smClock.average
             = (pJobInfo->summary.smClock.average * (pJobInfo->numGpus - 1) + fieldValue) / (pJobInfo->numGpus);
@@ -3117,14 +3067,7 @@ dcgmReturn_t DcgmHostEngineHandler::JobGetStats(const std::string &jobId, dcgmJo
             DCGM_FE_GPU, singleInfo->gpuId, DCGM_FI_DEV_MEM_CLOCK, &singleInfo->memoryClock, startTime, endTime);
 
         /* If memory clock is blank, update the average with the memory clock  value as 0 for this GPU*/
-        if (DCGM_INT32_IS_BLANK(singleInfo->memoryClock.average))
-        {
-            fieldValue = 0;
-        }
-        else
-        {
-            fieldValue = singleInfo->memoryClock.average;
-        }
+        fieldValue = (true == DCGM_INT32_IS_BLANK(singleInfo->memoryClock.average)) ? 0 : singleInfo->memoryClock.average;
 
         pJobInfo->summary.memoryClock.average
             = (pJobInfo->summary.memoryClock.average * (pJobInfo->numGpus - 1) + fieldValue) / (pJobInfo->numGpus);
@@ -4088,17 +4031,14 @@ DcgmEntityStatus_t DcgmHostEngineHandler::GetEntityStatus(dcgm_field_entity_grou
         {
             return msg.entityStatus;
         }
-        else
-        {
-            DCGM_LOG_ERROR << "Got " << errorString(dcgmReturn)
-                           << " from DCGM_NVSWITCH_SR_GET_ENTITY_STATUS of entityId " << entityId;
-            return DcgmEntityStatusUnknown;
-        }
+        
+        DCGM_LOG_ERROR << "Got " << errorString(dcgmReturn)
+                        << " from DCGM_NVSWITCH_SR_GET_ENTITY_STATUS of entityId " << entityId;
+        return DcgmEntityStatusUnknown;
+        
     }
-    else
-    {
-        return mpCacheManager->GetEntityStatus(entityGroupId, entityId);
-    }
+   
+    return mpCacheManager->GetEntityStatus(entityGroupId, entityId);
 }
 
 /*****************************************************************************/
@@ -4156,13 +4096,13 @@ dcgmReturn_t DcgmHostEngineHandler::Pause()
     /* The core module should be the last one to pause */
     for (auto &module : m_modules | std::views::filter([](auto const &m) { return m.id != DcgmModuleIdCore; }))
     {
-        if (auto ret = PauseModule(module.id); ret != DCGM_ST_OK)
+        if (PauseModule(module.id) != DCGM_ST_OK)
         {
             allPaused = false;
         }
     }
 
-    if (auto ret = PauseModule(DcgmModuleIdCore); ret != DCGM_ST_OK)
+    if (PauseModule(DcgmModuleIdCore) != DCGM_ST_OK)
     {
         allPaused = false;
     }
@@ -4177,7 +4117,7 @@ dcgmReturn_t DcgmHostEngineHandler::Resume()
     for (auto &module : m_modules)
     {
         /* The core module must be resumed first */
-        if (auto ret = ResumeModule(module.id); ret != DCGM_ST_OK)
+        if (ResumeModule(module.id) != DCGM_ST_OK)
         {
             allResumed = false;
         }

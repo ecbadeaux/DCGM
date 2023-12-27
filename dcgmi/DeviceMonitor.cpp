@@ -132,11 +132,10 @@ void DeviceMonitor::PopulateFieldDetails()
     for (unsigned short fieldId = 0; fieldId < DCGM_FI_MAX_FIELDS; fieldId++)
     {
         auto const *dcgmFormat_s = DcgmFieldGetById(fieldId);
-        if (dcgmFormat_s == nullptr)
+        if (dcgmFormat_s != nullptr)
         {
-            continue;
+            m_fieldDetails.emplace_back(dcgmFormat_s->tag, dcgmFormat_s->valueFormat->shortName, fieldId);
         }
-        m_fieldDetails.emplace_back(dcgmFormat_s->tag, dcgmFormat_s->valueFormat->shortName, fieldId);
     }
 }
 
@@ -539,11 +538,10 @@ dcgmReturn_t DeviceMonitor::LockWatchAndUpdate()
             for (auto const &entity : sortedEntities)
             {
                 auto it = entityStats.find(entity);
-                if (it == entityStats.end())
+                if (it != entityStats.end())
                 {
-                    continue;
+                    PrintMetricsRow(it->first, it->second, m_widthArray);
                 }
-                PrintMetricsRow(it->first, it->second, m_widthArray);
             }
         }
 

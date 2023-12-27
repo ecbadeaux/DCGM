@@ -109,11 +109,9 @@ unsigned int DcgmCoreProxy::GetGpuCount(int activeOnly)
         unsigned int count = ggc.response.uintAnswer;
         return count;
     }
-    else
-    {
-        DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to get a GPU count.";
-        return 0;
-    }
+    
+    DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to get a GPU count.";
+    return 0;
 }
 
 dcgmReturn_t DcgmCoreProxy::GetAllGpuInfo(std::vector<dcgmcm_gpu_info_cached_t> &gpuInfo)
@@ -156,12 +154,10 @@ unsigned int DcgmCoreProxy::NvmlIndexToGpuId(int nvmlIndex)
         unsigned int index = bq.response.uintAnswer;
         return index;
     }
-    else
-    {
-        DCGM_LOG_ERROR << "Error '" << errorString(ret) << " while attempting to get a GPU id for NVML index "
-                       << nvmlIndex << ".";
-        return DCGM_MAX_NUM_DEVICES;
-    }
+    
+    DCGM_LOG_ERROR << "Error '" << errorString(ret) << " while attempting to get a GPU id for NVML index "
+                    << nvmlIndex << ".";
+    return DCGM_MAX_NUM_DEVICES;
 }
 
 dcgmReturn_t DcgmCoreProxy::UpdateAllFields(int waitForUpdate)
@@ -176,13 +172,10 @@ dcgmReturn_t DcgmCoreProxy::UpdateAllFields(int waitForUpdate)
 
     if (ret == DCGM_ST_OK)
     {
-        ret = qg.response.ret;
+        return qg.response.ret;
     }
-    else
-    {
-        DCGM_LOG_ERROR << "Error '" << errorString(ret) << " while attempting to trigger an update for all fields.";
-    }
-
+   
+    DCGM_LOG_ERROR << "Error '" << errorString(ret) << " while attempting to trigger an update for all fields.";
     return ret;
 }
 
@@ -201,9 +194,7 @@ dcgmReturn_t DcgmCoreProxy::GetEntityNvLinkLinkStatus(dcgm_field_entity_group_t 
     dcgmReturn_t ret = m_coreCallbacks.postfunc(&nls.header, m_coreCallbacks.poster);
 
     if (ret == DCGM_ST_OK)
-    {
-        ret = nls.response.ret;
-
+    { 
         unsigned int count;
         if (entityGroupId == DCGM_FE_GPU)
         {
@@ -215,13 +206,13 @@ dcgmReturn_t DcgmCoreProxy::GetEntityNvLinkLinkStatus(dcgm_field_entity_group_t 
         }
 
         memcpy(linkStates, nls.response.linkStates, count * sizeof(dcgmNvLinkLinkState_t));
+
+        return nls.response.ret;
     }
-    else
-    {
-        DCGM_LOG_ERROR << "Error '" << errorString(ret)
-                       << "' while attempting to get NvLinkLinkStatus for entity group " << entityGroupId << " id "
-                       << entityId;
-    }
+    
+    DCGM_LOG_ERROR << "Error '" << errorString(ret)
+                    << "' while attempting to get NvLinkLinkStatus for entity group " << entityGroupId << " id "
+                    << entityId;
 
     return ret;
 }
@@ -258,14 +249,11 @@ dcgmReturn_t DcgmCoreProxy::AddFieldWatch(dcgm_field_entity_group_t entityGroupI
 
     if (ret == DCGM_ST_OK)
     {
-        ret = afw.ret;
+        return afw.ret;
     }
-    else
-    {
-        DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to add field watch: entity group "
-                       << entityGroupId << ", entity " << entityId << ", field " << fieldId << ".";
-    }
-
+    
+    DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to add field watch: entity group "
+                    << entityGroupId << ", entity " << entityId << ", field " << fieldId << ".";
     return ret;
 }
 
@@ -304,15 +292,12 @@ dcgmReturn_t DcgmCoreProxy::GetInt64SummaryData(dcgm_field_entity_group_t entity
 
     if (ret == DCGM_ST_OK)
     {
-        ret = gisd.response.ret;
         memcpy(summaryValues, gisd.response.summaryValues, numSummaryTypes * sizeof(long long));
+        return gisd.response.ret;
     }
-    else
-    {
-        DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to get summary data for entity group"
-                       << entityGroupId << ", entity " << entityId << ", field " << fieldId;
-    }
-
+    
+    DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to get summary data for entity group"
+                    << entityGroupId << ", entity " << entityId << ", field " << fieldId;
     return ret;
 }
 
@@ -336,7 +321,6 @@ dcgmReturn_t DcgmCoreProxy::GetLatestSample(dcgm_field_entity_group_t entityGrou
 
     if (ret == DCGM_ST_OK)
     {
-        ret = gls.response.ret;
         if (gls.request.populateSamples)
         {
             memcpy(sample, &gls.response.sample, sizeof(*sample));
@@ -346,12 +330,11 @@ dcgmReturn_t DcgmCoreProxy::GetLatestSample(dcgm_field_entity_group_t entityGrou
         {
             fvBuffer->SetFromBuffer(gls.response.buffer, gls.response.bufferSize);
         }
+        return gls.response.ret;
     }
-    else
-    {
-        DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to get latest sample for entity group "
-                       << entityGroupId << ", entity " << entityId << ", field " << fieldId;
-    }
+    
+    DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to get latest sample for entity group "
+                    << entityGroupId << ", entity " << entityId << ", field " << fieldId;
 
     return ret;
 }
@@ -381,15 +364,12 @@ dcgmReturn_t DcgmCoreProxy::GetSamples(dcgm_field_entity_group_t entityGroupId,
 
     if (ret == DCGM_ST_OK)
     {
-        ret       = gs.response.ret;
         *Msamples = gs.response.numSamples;
+        return gs.response.ret;
     }
-    else
-    {
-        DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to get samples for entity group "
-                       << entityGroupId << ", entity " << entityId << ", field " << fieldId;
-    }
-
+   
+    DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to get samples for entity group "
+                    << entityGroupId << ", entity " << entityId << ", field " << fieldId;
     return ret;
 }
 
@@ -551,14 +531,12 @@ dcgmReturn_t DcgmCoreProxy::RemoveFieldWatch(dcgm_field_entity_group_t entityGro
 
     if (ret == DCGM_ST_OK)
     {
-        ret = rfw.ret;
+        return rfw.ret;
     }
-    else
-    {
-        DCGM_LOG_ERROR << "Error '" << errorString(ret)
-                       << "' while while attempting to remove field watch: entity group " << entityGroupId << " entity "
-                       << entityId << " field " << fieldId << ".";
-    }
+    
+    DCGM_LOG_ERROR << "Error '" << errorString(ret)
+                    << "' while while attempting to remove field watch: entity group " << entityGroupId << " entity "
+                    << entityId << " field " << fieldId << ".";
 
     return ret;
 }
@@ -583,12 +561,10 @@ dcgmReturn_t DcgmCoreProxy::AppendSamples(DcgmFvBuffer *fvBuffer) const
 
     if (ret == DCGM_ST_OK)
     {
-        ret = as.ret;
+        return as.ret;
     }
-    else
-    {
-        DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to append samples to the cache.";
-    }
+    
+    DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to append samples to the cache.";
 
     return ret;
 }
@@ -607,14 +583,11 @@ dcgmReturn_t DcgmCoreProxy::SetValue(int gpuId, unsigned short fieldId, dcgmcm_s
 
     if (ret == DCGM_ST_OK)
     {
-        ret = sv.ret;
+        return sv.ret;
     }
-    else
-    {
-        DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to set a value for GPU " << gpuId
-                       << " and field " << fieldId << ".";
-    }
-
+    
+    DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to set a value for GPU " << gpuId
+                    << " and field " << fieldId << ".";
     return ret;
 }
 
@@ -636,12 +609,10 @@ dcgmReturn_t DcgmCoreProxy::GetGroupEntities(unsigned int groupId, std::vector<d
             entities.push_back(gge.response.entityPairs[i]);
         }
 
-        ret = gge.response.ret;
+        return gge.response.ret;
     }
-    else
-    {
-        DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to get entities for group " << groupId;
-    }
+    
+    DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to get entities for group " << groupId;
 
     return ret;
 }
@@ -667,13 +638,11 @@ dcgmReturn_t DcgmCoreProxy::AreAllTheSameSku(dcgm_connection_id_t connectionId,
     if (ret == DCGM_ST_OK)
     {
         *areAllSameSku = bg.response.uintAnswer != 0;
-        ret            = bg.response.ret;
+        return bg.response.ret;
     }
-    else
-    {
-        DCGM_LOG_ERROR << "Error '" << errorString << "' while asking if all GPUs in group " << groupId
-                       << " are the same SKU.";
-    }
+    
+    DCGM_LOG_ERROR << "Error '" << errorString << "' while asking if all GPUs in group " << groupId
+                    << " are the same SKU.";
 
     return ret;
 }
@@ -700,13 +669,10 @@ dcgmReturn_t DcgmCoreProxy::GetGroupGpuIds(dcgm_connection_id_t connectionId,
             gpuIds.push_back(ggg.response.gpuIds[i]);
         }
 
-        ret = ggg.response.ret;
+        return ggg.response.ret;
     }
-    else
-    {
-        DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to get GPU ids from group " << groupId;
-    }
-
+    
+    DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to get GPU ids from group " << groupId;
     return ret;
 }
 
@@ -725,12 +691,10 @@ int DcgmCoreProxy::GpuIdToNvmlIndex(unsigned int gpuId) const
         int nvmlIndex = bq.response.uintAnswer;
         return nvmlIndex;
     }
-    else
-    {
-        DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to translate GPU " << gpuId
-                       << " id to its NVML id.";
-        return -1;
-    }
+   
+    DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to translate GPU " << gpuId
+                    << " id to its NVML id.";
+    return -1;
 }
 
 dcgmReturn_t DcgmCoreProxy::VerifyAndUpdateGroupId(unsigned int *groupId) const
@@ -745,15 +709,12 @@ dcgmReturn_t DcgmCoreProxy::VerifyAndUpdateGroupId(unsigned int *groupId) const
 
     if (ret == DCGM_ST_OK)
     {
-        ret      = bq.response.ret;
         *groupId = bq.response.uintAnswer;
+        return bq.response.ret;
     }
-    else
-    {
-        DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to verify and update the group id "
-                       << *groupId;
-    }
-
+   
+    DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to verify and update the group id "
+                    << *groupId;
     return ret;
 }
 
@@ -885,12 +846,10 @@ dcgmReturn_t DcgmCoreProxy::GetFieldGroupFields(dcgmFieldGrp_t fieldGrp, std::ve
             fieldIds.push_back(fgf.response.fieldIds[i]);
         }
 
-        ret = fgf.response.ret;
+        return fgf.response.ret;
     }
-    else
-    {
-        DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to get fields for group " << fieldGrp;
-    }
+    
+    DCGM_LOG_ERROR << "Error '" << errorString(ret) << "' while attempting to get fields for group " << fieldGrp;
 
     return ret;
 }
@@ -1018,28 +977,22 @@ dcgmReturn_t DcgmCoreProxy::GetMigIndicesForEntity(dcgmGroupEntityPair_t const &
 
     if (gpuId != nullptr)
     {
-        if (query.response.gpuId != std::numeric_limits<decltype(query.response.gpuId)>::max())
-        {
-            *gpuId = query.response.gpuId;
-        }
-        else
+        if (query.response.gpuId == std::numeric_limits<decltype(query.response.gpuId)>::max())
         {
             DCGM_LOG_ERROR << "Requested entityId was not a MIG instance";
             return DCGM_ST_BADPARAM;
         }
+        *gpuId = query.response.gpuId;
     }
 
     if (instanceId != nullptr)
     {
-        if (query.response.instanceId != std::numeric_limits<decltype(query.response.instanceId)>::max())
-        {
-            *instanceId = query.response.instanceId;
-        }
-        else
+        if (query.response.instanceId == std::numeric_limits<decltype(query.response.instanceId)>::max())
         {
             DCGM_LOG_ERROR << "Requested entityId was not a MIG instance";
             return DCGM_ST_BADPARAM;
         }
+        *instanceId = query.response.instanceId;
     }
 
     return query.response.ret;

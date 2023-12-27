@@ -28,16 +28,6 @@ Entity::Entity(dcgm_field_entity_group_t entityGroupId, dcgm_field_eid_t entityI
 
 bool Entity::operator<(const Entity &other) const
 {
-    if (m_entity.entityGroupId < other.m_entity.entityGroupId)
-    {
-        return true;
-    }
-
-    if (m_entity.entityGroupId > other.m_entity.entityGroupId)
-    {
-        return false;
-    }
-
     return m_entity.entityId < other.m_entity.entityId;
 }
 } // namespace DcgmNs::ProfTester

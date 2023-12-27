@@ -56,11 +56,9 @@ std::optional<std::string> GetServiceAccount(DcgmCoreProxy const &proxy)
         DCGM_LOG_DEBUG << fmt::format("GetServiceAccount result: {}", serviceAccount);
         return serviceAccount;
     }
-    else
-    {
-        DCGM_LOG_DEBUG << fmt::format("GetServiceAccount error: ({}) {}.", ret, errorString(ret));
-    }
-
+    
+    DCGM_LOG_DEBUG << fmt::format("GetServiceAccount error: ({}) {}.", ret, errorString(ret));
+    
     return std::nullopt;
 }
 
@@ -144,31 +142,29 @@ std::string DcgmDiagManager::GetNvvsBinPath()
 {
     std::string nvvsBinPath, cmd;
     const char *value;
-    int result;
 
     // Default NVVS binary path
     cmd = "/usr/share/nvidia-validation-suite/nvvs";
 
     // Check for NVVS binary path enviroment variable
     value = std::getenv("NVVS_BIN_PATH");
-    if (value != NULL)
+    if (value == NULL)
     {
-        nvvsBinPath = std::string(value) + "/nvvs";
-        // Check if file exists
-        result = access(nvvsBinPath.c_str(), F_OK);
-        if (result == 0)
-        {
-            cmd = nvvsBinPath;
-            DCGM_LOG_DEBUG << "The new NVVS binary path is: " << cmd;
-            return cmd;
-        }
-        else
-        {
-            DCGM_LOG_WARNING << "Ignoring specified NVVS binary path " << value
-                             << " because the file cannot be accessed.";
-        }
+        return cmd;
     }
-    return cmd;
+    
+    nvvsBinPath = std::string(value) + "/nvvs";
+    // Check if file exists
+    if (access(nvvsBinPath.c_str(), F_OK) == 0)
+    {
+        cmd = nvvsBinPath;
+        DCGM_LOG_DEBUG << "The new NVVS binary path is: " << cmd;
+        return cmd;
+    }
+    
+    DCGM_LOG_WARNING << "Ignoring specified NVVS binary path " << value
+                        << " because the file cannot be accessed.";
+    return cmd
 }
 
 /*****************************************************************************/
@@ -187,24 +183,22 @@ dcgmReturn_t DcgmDiagManager::EnforceGPUConfiguration(unsigned int gpuId, dcgm_c
 
     dcgmReturn = m_coreProxy.SendModuleCommand(&msg);
 
-    if (dcgmReturn != DCGM_ST_OK)
+    if (dcgmReturn == DCGM_ST_OK)
     {
-        log_error("ProcessModuleCommand returned {}.", (int)dcgmReturn);
-        for (unsigned int i = 0; i < msg.numStatuses; i++)
-        {
-            log_error("Error in Enforcing Configuration. API Err Code: {} "
-                      "GPU ID: {} Field ID: {} Additional Error Code: {}",
-                      dcgmReturn,
-                      msg.statuses[i].gpuId,
-                      msg.statuses[i].fieldId,
-                      msg.statuses[i].errorCode);
-        }
-    }
-    else
-    {
-        /* Log that enforcing of configuration is successful */
+         /* Log that enforcing of configuration is successful */
         log_info("After safe reset, configuration enforced successfully for GPU ID {}", gpuId);
         return dcgmReturn;
+        
+    }
+    log_error("ProcessModuleCommand returned {}.", (int)dcgmReturn);
+    for (unsigned int i = 0; i < msg.numStatuses; i++)
+    {
+        log_error("Error in Enforcing Configuration. API Err Code: {} "
+                    "GPU ID: {} Field ID: {} Additional Error Code: {}",
+                    dcgmReturn,
+                    msg.statuses[i].gpuId,
+                    msg.statuses[i].fieldId,
+                    msg.statuses[i].errorCode);
     }
 
     log_info("Configuration enforced successfully for GPU ID {}", gpuId);
@@ -261,8 +255,7 @@ dcgmReturn_t DcgmDiagManager::AddRunOptions(std::vector<std::string> &cmdArgs, d
     }
     if (testParms.size() > 0)
     {
-        cmdArgs.push_back("--parameters");
-        cmdArgs.push_back(testParms);
+        cmdArgs.push_back(cmdArgs.end(), {"--parameters", testParms})
     }
 
     return DCGM_ST_OK;
@@ -297,8 +290,7 @@ dcgmReturn_t DcgmDiagManager::AddConfigFile(dcgmRunDiag_t *drd, std::vector<std:
             return DCGM_ST_GENERIC_ERROR;
         }
 
-        int ret = chmod(fileName, 0600);
-        if (ret == -1)
+        if (chmod(fileName, 0600) == -1)
         {
             close(fd);
             DCGM_LOG_ERROR << "Couldn't chmod a temporary configuration file for NVVS: " << std::strerror(errno);
@@ -345,16 +337,12 @@ dcgmReturn_t DcgmDiagManager::AddConfigFile(dcgmRunDiag_t *drd, std::vector<std:
                 "Service account is not specified. Skipping permissions adjustments for the config file {}", fileName);
         }
 
-        if (written == configFileContentsSize)
-        {
-            cmdArgs.push_back("--config");
-            cmdArgs.push_back(fileName);
-        }
-        else
+        if (written != configFileContentsSize)
         {
             DCGM_LOG_ERROR << "Failed to write the temporary file for NVVS: " << std::strerror(errno);
             return DCGM_ST_GENERIC_ERROR;
         }
+        cmdArgs.insert(cmdArgs.end(), {"--config", fileName})
     }
     else
     {
@@ -381,49 +369,40 @@ void DcgmDiagManager::AddMiscellaneousNvvsOptions(std::vector<std::string> &cmdA
 
     if (strlen(drd->debugLogFile) > 0)
     {
-        cmdArgs.push_back("-l");
-        std::string debugArg(drd->debugLogFile);
-        cmdArgs.push_back(debugArg);
+        cmdArgs.insert(cmdArgs.end(), {"-l", std::string(drd->debugLogFile)})
     }
 
     if (strlen(drd->statsPath) > 0)
     {
-        cmdArgs.push_back("--statspath");
-        std::string statsPathArg(drd->statsPath);
-        cmdArgs.push_back(statsPathArg);
+        cmdArgs.insert(cmdArgs.end(), {"--statspath", std::string(drd->statsPath)})
     }
 
     // Gpu ids
     if (strlen(drd->fakeGpuList) > 0)
     {
-        cmdArgs.push_back("-f");
-        cmdArgs.push_back(gpuIds);
+        cmdArgs.insert(cmdArgs.end(), {"-f", gpuIds});
     }
     else if (gpuIds.length())
     {
-        cmdArgs.push_back("--indexes");
-        cmdArgs.push_back(gpuIds);
+        cmdArgs.insert(cmdArgs.end(), {"--indexes", gpuIds});
     }
 
     // Logging severity
     if (drd->debugLevel != DCGM_INT32_BLANK)
     {
-        cmdArgs.push_back("-d");
-        cmdArgs.push_back(std::string(LoggingSeverityToString(drd->debugLevel, DCGM_LOGGING_DEFAULT_NVVS_SEVERITY)));
+        cmdsArgs.insert(cmdArgs.end(), {"-d", std::string(LoggingSeverityToString(drd->debugLevel, DCGM_LOGGING_DEFAULT_NVVS_SEVERITY))})
     }
 
     // Plugin path
     const char *pluginDir = getenv(NVVS_PLUGIN_DIR);
     if (pluginDir)
     {
-        cmdArgs.push_back("-p");
-        cmdArgs.push_back(std::string(pluginDir));
+        cmdsArgs.insert(cmdArgs.end(), {"-p", std::string(pluginDir)});
     }
 
     if (drd->throttleMask[0] != '\0')
     {
-        cmdArgs.push_back("--throttle-mask");
-        cmdArgs.push_back(std::string(drd->throttleMask));
+        cmdsArgs.insert(cmdArgs.end(), {"--throttle-mask", std::string(drd->throttleMask) })
     }
 
     if (drd->flags & DCGM_RUN_FLAGS_FAIL_EARLY)
@@ -431,19 +410,16 @@ void DcgmDiagManager::AddMiscellaneousNvvsOptions(std::vector<std::string> &cmdA
         cmdArgs.push_back("--fail-early");
         if (drd->failCheckInterval)
         {
-            cmdArgs.push_back("--check-interval");
             char buf[30];
             snprintf(buf, sizeof(buf), "%u", drd->failCheckInterval);
-            cmdArgs.push_back(std::string(buf));
+            cmdsArgs.insert(cmdArgs.end(), {"--check-interval", std::string(buf)});
         }
     }
 
     if (drd->totalIterations > 1)
     {
-        cmdArgs.push_back("--current-iteration");
-        cmdArgs.push_back(fmt::format("{}", drd->currentIteration));
-        cmdArgs.push_back("--total-iterations");
-        cmdArgs.push_back(fmt::format("{}", drd->totalIterations));
+        cmdsArgs.insert(cmdArgs.end(), {"--current-iteration", fmt::format("{}", drd->currentIteration),
+        "--total-iterations", fmt::format("{}", drd->totalIterations)});
     }
 }
 
@@ -461,14 +437,10 @@ dcgmReturn_t DcgmDiagManager::CreateNvvsCommand(std::vector<std::string> &cmdArg
     }
     // Reserve enough space for args
     cmdArgs.reserve(25);
-    cmdArgs.push_back(m_nvvsPath);
-
     // Request json output and say we're DCGM
-    cmdArgs.push_back("-j");
-    cmdArgs.push_back("-z");
-
-    ret = AddRunOptions(cmdArgs, drd);
-    if (ret != DCGM_ST_OK)
+    cmdArgs.insert(cmdArgs.end(), {m_nvvsPath, "-j", "-z"});
+    
+    if ((ret = AddRunOptions(cmdArgs, drd)) != DCGM_ST_OK)
     {
         return ret;
     }
@@ -504,8 +476,7 @@ dcgmReturn_t DcgmDiagManager::PerformNVVSExecute(std::string *stdoutStr,
 /*****************************************************************************/
 dcgmReturn_t DcgmDiagManager::PerformDummyTestExecute(std::string *stdoutStr, std::string *stderrStr) const
 {
-    std::vector<std::string> args;
-    args.emplace_back("dummy");
+    std::vector<std::string> args = {"dummy"};
     return PerformExternalCommand(args, stdoutStr, stderrStr);
 }
 
@@ -888,12 +859,7 @@ auto ExecuteAndParseNvvs(DcgmDiagManager const &self,
  */
 bool IsPluginMissing(DcgmNs::Nvvs::Json::DiagnosticResults const &results)
 {
-    if (results.errorCode.has_value() && results.errorCode.value() == NVVS_ST_TEST_NOT_FOUND)
-    {
-        return true;
-    }
-
-    return false;
+    return (results.errorCode.has_value() && results.errorCode.value() == NVVS_ST_TEST_NOT_FOUND)
 }
 
 /**

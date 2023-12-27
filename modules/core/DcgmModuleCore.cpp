@@ -1837,8 +1837,7 @@ dcgmReturn_t DcgmModuleCore::ProcessProfGetMetricGroups(dcgm_core_msg_get_metric
     entityKey.entityGroupId = DCGM_FE_GPU;
     entityKey.fieldId       = DCGM_FI_PROF_GR_ENGINE_ACTIVE; /* Any profiling field will do */
 
-    bool isGpmGpu = m_cacheManager->EntitySupportsGpm(entityKey);
-    if (!isGpmGpu)
+    if (false == m_cacheManager->EntitySupportsGpm(entityKey))
     {
         /* Route this request to the profiling module */
         DCGM_LOG_DEBUG << "gpuId " << entityKey.entityId << " was not a GPM GPU";

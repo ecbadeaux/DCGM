@@ -1,0 +1,219 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CMakeDetermineSystem.cmake:211 (message)"
+      - "CMakeLists.txt:16 (project)"
+    message: |
+      The system is: Windows - 10.0.19045 - AMD64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:16 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.38.33130/bin/Hostx64/x64/cl.exe 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      Microsoft (R) C/C++ Optimizing Compiler Version 19.38.33130 for x64
+      Copyright (C) Microsoft Corporation.  All rights reserved.
+      
+      CMakeCCompilerId.c
+      Microsoft (R) Incremental Linker Version 14.38.33130.0
+      Copyright (C) Microsoft Corporation.  All rights reserved.
+      
+      /out:CMakeCCompilerId.exe 
+      CMakeCCompilerId.obj 
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.exe"
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.obj"
+      
+      The C compiler identification is MSVC, found in:
+        C:/Users/Everett/Desktop/MYDCGM/DCGM/out/build/x64-Debug/CMakeFiles/3.27.2-msvc1/CompilerIdC/CMakeCCompilerId.exe
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:1158 (message)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:221 (CMAKE_DETERMINE_MSVC_SHOWINCLUDES_PREFIX)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:16 (project)"
+    message: |
+      Detecting C compiler /showIncludes prefix:
+        main.c
+        Note: including file: C:\\Users\\Everett\\Desktop\\MYDCGM\\DCGM\\out\\build\\x64-Debug\\CMakeFiles\\ShowIncludes\\foo.h
+        
+      Found prefix "Note: including file: "
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:16 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.38.33130/bin/Hostx64/x64/cl.exe 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      Microsoft (R) C/C++ Optimizing Compiler Version 19.38.33130 for x64
+      Copyright (C) Microsoft Corporation.  All rights reserved.
+      
+      CMakeCXXCompilerId.cpp
+      Microsoft (R) Incremental Linker Version 14.38.33130.0
+      Copyright (C) Microsoft Corporation.  All rights reserved.
+      
+      /out:CMakeCXXCompilerId.exe 
+      CMakeCXXCompilerId.obj 
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.exe"
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.obj"
+      
+      The CXX compiler identification is MSVC, found in:
+        C:/Users/Everett/Desktop/MYDCGM/DCGM/out/build/x64-Debug/CMakeFiles/3.27.2-msvc1/CompilerIdCXX/CMakeCXXCompilerId.exe
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:1158 (message)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:221 (CMAKE_DETERMINE_MSVC_SHOWINCLUDES_PREFIX)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:16 (project)"
+    message: |
+      Detecting CXX compiler /showIncludes prefix:
+        main.c
+        Note: including file: C:\\Users\\Everett\\Desktop\\MYDCGM\\DCGM\\out\\build\\x64-Debug\\CMakeFiles\\ShowIncludes\\foo.h
+        
+      Found prefix "Note: including file: "
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:16 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "C:/Users/Everett/Desktop/MYDCGM/DCGM/out/build/x64-Debug/CMakeFiles/CMakeScratch/TryCompile-2c4ddi"
+      binary: "C:/Users/Everett/Desktop/MYDCGM/DCGM/out/build/x64-Debug/CMakeFiles/CMakeScratch/TryCompile-2c4ddi"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/Everett/Desktop/MYDCGM/DCGM/out/build/x64-Debug/CMakeFiles/CMakeScratch/TryCompile-2c4ddi'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe" -v cmTC_69214
+        [1/2] C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -MDd /showIncludes /FoCMakeFiles\\cmTC_69214.dir\\CMakeCCompilerABI.c.obj /FdCMakeFiles\\cmTC_69214.dir\\ /FS -c "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-3.27\\Modules\\CMakeCCompilerABI.c"
+        [2/2] cmd.exe /C "cd . && "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\\cmTC_69214.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_69214.dir\\CMakeCCompilerABI.c.obj  /out:cmTC_69214.exe /implib:cmTC_69214.lib /pdb:cmTC_69214.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:16 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "C:/Users/Everett/Desktop/MYDCGM/DCGM/out/build/x64-Debug/CMakeFiles/CMakeScratch/TryCompile-hze4lc"
+      binary: "C:/Users/Everett/Desktop/MYDCGM/DCGM/out/build/x64-Debug/CMakeFiles/CMakeScratch/TryCompile-hze4lc"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc"
+      CMAKE_CXX_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/Everett/Desktop/MYDCGM/DCGM/out/build/x64-Debug/CMakeFiles/CMakeScratch/TryCompile-hze4lc'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe" -v cmTC_4c8bf
+        [1/2] C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP   /DWIN32 /D_WINDOWS /EHsc  /Zi /Ob0 /Od /RTC1 -MDd /showIncludes /FoCMakeFiles\\cmTC_4c8bf.dir\\CMakeCXXCompilerABI.cpp.obj /FdCMakeFiles\\cmTC_4c8bf.dir\\ /FS -c "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-3.27\\Modules\\CMakeCXXCompilerABI.cpp"
+        [2/2] cmd.exe /C "cd . && "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\\cmTC_4c8bf.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_4c8bf.dir\\CMakeCXXCompilerABI.cpp.obj  /out:cmTC_4c8bf.exe /implib:cmTC_4c8bf.lib /pdb:cmTC_4c8bf.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:37 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test CC_HAS_WNO_CAST_FUNCTION_TYPE"
+    directories:
+      source: "C:/Users/Everett/Desktop/MYDCGM/DCGM/out/build/x64-Debug/CMakeFiles/CMakeScratch/TryCompile-f108ca"
+      binary: "C:/Users/Everett/Desktop/MYDCGM/DCGM/out/build/x64-Debug/CMakeFiles/CMakeScratch/TryCompile-f108ca"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: ";C:/Users/Everett/Desktop/MYDCGM/DCGM/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "CC_HAS_WNO_CAST_FUNCTION_TYPE"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/Everett/Desktop/MYDCGM/DCGM/out/build/x64-Debug/CMakeFiles/CMakeScratch/TryCompile-f108ca'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe" -v cmTC_ad1f6
+        [1/2] C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DCC_HAS_WNO_CAST_FUNCTION_TYPE  /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -MDd   -Wno-cast-function-type /showIncludes /FoCMakeFiles\\cmTC_ad1f6.dir\\src.c.obj /FdCMakeFiles\\cmTC_ad1f6.dir\\ /FS -c C:\\Users\\Everett\\Desktop\\MYDCGM\\DCGM\\out\\build\\x64-Debug\\CMakeFiles\\CMakeScratch\\TryCompile-f108ca\\src.c
+        FAILED: CMakeFiles/cmTC_ad1f6.dir/src.c.obj 
+        C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DCC_HAS_WNO_CAST_FUNCTION_TYPE  /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -MDd   -Wno-cast-function-type /showIncludes /FoCMakeFiles\\cmTC_ad1f6.dir\\src.c.obj /FdCMakeFiles\\cmTC_ad1f6.dir\\ /FS -c C:\\Users\\Everett\\Desktop\\MYDCGM\\DCGM\\out\\build\\x64-Debug\\CMakeFiles\\CMakeScratch\\TryCompile-f108ca\\src.c
+        cl : Command line error D8021 : invalid numeric argument '/Wno-cast-function-type'
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.27/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "CMakeLists.txt:41 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test CC_HAS_WUNREACHABLE_CODE_LOOP_INCREMENT"
+    directories:
+      source: "C:/Users/Everett/Desktop/MYDCGM/DCGM/out/build/x64-Debug/CMakeFiles/CMakeScratch/TryCompile-2d7j2t"
+      binary: "C:/Users/Everett/Desktop/MYDCGM/DCGM/out/build/x64-Debug/CMakeFiles/CMakeScratch/TryCompile-2d7j2t"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: ";C:/Users/Everett/Desktop/MYDCGM/DCGM/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "CC_HAS_WUNREACHABLE_CODE_LOOP_INCREMENT"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/Everett/Desktop/MYDCGM/DCGM/out/build/x64-Debug/CMakeFiles/CMakeScratch/TryCompile-2d7j2t'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe" -v cmTC_768b7
+        [1/2] C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DCC_HAS_WUNREACHABLE_CODE_LOOP_INCREMENT  /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -MDd   -Wunreachable-code-loop-increment /showIncludes /FoCMakeFiles\\cmTC_768b7.dir\\src.c.obj /FdCMakeFiles\\cmTC_768b7.dir\\ /FS -c C:\\Users\\Everett\\Desktop\\MYDCGM\\DCGM\\out\\build\\x64-Debug\\CMakeFiles\\CMakeScratch\\TryCompile-2d7j2t\\src.c
+        FAILED: CMakeFiles/cmTC_768b7.dir/src.c.obj 
+        C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DCC_HAS_WUNREACHABLE_CODE_LOOP_INCREMENT  /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -MDd   -Wunreachable-code-loop-increment /showIncludes /FoCMakeFiles\\cmTC_768b7.dir\\src.c.obj /FdCMakeFiles\\cmTC_768b7.dir\\ /FS -c C:\\Users\\Everett\\Desktop\\MYDCGM\\DCGM\\out\\build\\x64-Debug\\CMakeFiles\\CMakeScratch\\TryCompile-2d7j2t\\src.c
+        cl : Command line error D8021 : invalid numeric argument '/Wunreachable-code-loop-increment'
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+...

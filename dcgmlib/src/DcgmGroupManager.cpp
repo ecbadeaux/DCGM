@@ -439,10 +439,10 @@ dcgmReturn_t DcgmGroupManager::GetGroupGpuIds(dcgm_connection_id_t connectionId,
 
     for (entityIter = entities.begin(); entityIter != entities.end(); ++entityIter)
     {
-        if ((*entityIter).entityGroupId != DCGM_FE_GPU)
-            continue;
-
-        gpuIds.push_back((*entityIter).entityId);
+        if ((*entityIter).entityGroupId == DCGM_FE_GPU)
+        {
+            gpuIds.push_back((*entityIter).entityId);
+        }
     }
 
     return DCGM_ST_OK;
